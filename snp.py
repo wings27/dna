@@ -3,15 +3,21 @@ from __future__ import print_function
 from decimal import Decimal
 
 
+class FileIO:
+    def load_snp_group(self, file_name):
+        with open(file_name, 'r') as f:
+            f.write('\n\n')
+
+
 class SnpFeature:
     GENE_LENGTH = 2
 
     def __init__(self, snp):
         features = SnpFeature.extract_feature(snp)
         self.data = features
-        self.large_count = features.count(1)
-        self.small_count = features.count(-1)
-        self.medium_count = len(features) - self.large_count - self.small_count
+        self.largeCount = features.count(1)
+        self.smallCount = features.count(-1)
+        self.mediumCount = len(features) - self.largeCount - self.smallCount
 
     @staticmethod
     def extract_feature(snp):
@@ -36,10 +42,16 @@ class SnpFeature:
             return 0
 
     def p_A(self):
-        large_count = self.large_count * self.GENE_LENGTH + self.medium_count
+        large_count = self.largeCount * self.GENE_LENGTH + self.mediumCount
 
         return Decimal(large_count) / (len(self.data) * self.GENE_LENGTH)
 
     def p_AA_Aa_aa(self):
         return tuple(map(lambda x: Decimal(x) / len(self.data),
-                         (self.large_count, self.medium_count, self.small_count)))
+                         (self.largeCount, self.mediumCount, self.smallCount)))
+
+
+class CLDCalculation:
+    def __init__(self, snp_group_1, snp_group_2):
+        self.snp_group_1 = snp_group_1
+        self.snp_group_2 = snp_group_2

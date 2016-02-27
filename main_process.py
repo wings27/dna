@@ -1,5 +1,5 @@
 from __future__ import print_function
-from collections import OrderedDict
+import csv
 
 import os
 
@@ -45,7 +45,7 @@ def __remove_output():
 def __save_snp(snp_id, snp):
     with open('group.' + str(snp_id) + '.out', 'a') as f:
         f.write(str(snp))
-        f.write('\n\n')
+        f.write('\n')
 
 
 def __get_output_file_names():
@@ -59,7 +59,11 @@ def __get_output_file_names():
 
 def main_process():
     output_map = group_and_save_snps()
-    output_map.popitem()
+    output_map_keys = sorted(output_map.keys())
+    file1 = output_map[output_map_keys[0]]
+    file2 = output_map[output_map_keys[1]]
+
+    print(file1, file2)
 
 
 if __name__ == '__main__':
