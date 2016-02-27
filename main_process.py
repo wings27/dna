@@ -56,13 +56,10 @@ def main_process():
     file2 = output_map[output_map_keys[1]]
 
     print(file1, file2)
-    features = FileHelper.load_feature_group(file1)
-    print(features)
-    for line in features:
-        snp_feature = SnpFeature(list(line))
-        print(snp_feature.data)
-        print(snp_feature.p_A())
-        print(snp_feature.p_AA_Aa_aa())
+    features1 = FileHelper.load_feature_group(file1)
+    features2 = FileHelper.load_feature_group(file2)
+    cld_cal = CLDCalculation(features1, features2)
+    print(cld_cal.cld_1())
 
 
 if __name__ == '__main__':
