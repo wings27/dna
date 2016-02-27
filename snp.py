@@ -13,12 +13,11 @@ class FileHelper:
 class SnpFeature:
     GENE_LENGTH = 2
 
-    def __init__(self, snp):
-        features = SnpFeature.extract_feature(snp)
+    def __init__(self, features):
         self.data = features
-        self.largeCount = features.count(1)
-        self.smallCount = features.count(-1)
-        self.mediumCount = len(features) - self.largeCount - self.smallCount
+        self.__largeCount = features.count(1)
+        self.__smallCount = features.count(-1)
+        self.__mediumCount = len(features) - self.__largeCount - self.__smallCount
 
     @staticmethod
     def extract_feature(snp):
@@ -43,13 +42,13 @@ class SnpFeature:
             return 0
 
     def p_A(self):
-        large_count = self.largeCount * self.GENE_LENGTH + self.mediumCount
+        large_count = self.__largeCount * self.GENE_LENGTH + self.__mediumCount
 
         return Decimal(large_count) / (len(self.data) * self.GENE_LENGTH)
 
     def p_AA_Aa_aa(self):
         return tuple(map(lambda x: Decimal(x) / len(self.data),
-                         (self.largeCount, self.mediumCount, self.smallCount)))
+                         (self.__largeCount, self.__mediumCount, self.__smallCount)))
 
 
 class CLDCalculation:

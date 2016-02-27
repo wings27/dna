@@ -25,9 +25,9 @@ def group_and_save_feature():
         group_num = int(map_matrix[i])
         group_id = int(int(group_num) / GROUP_RANGE)
 
-        snp_feature = SnpFeature(snp_i)
+        snp_feature = SnpFeature.extract_feature(snp_i)
 
-        __save_array(prefix + str(group_id), snp_feature.data)
+        __save_array(prefix + str(group_id), snp_feature)
 
     output_map = {}
     for file_name in os.listdir('.'):
@@ -58,6 +58,11 @@ def main_process():
     print(file1, file2)
     features = FileHelper.load_feature_group(file1)
     print(features)
+    for line in features:
+        snp_feature = SnpFeature(list(line))
+        print(snp_feature.data)
+        print(snp_feature.p_A())
+        print(snp_feature.p_AA_Aa_aa())
 
 
 if __name__ == '__main__':
