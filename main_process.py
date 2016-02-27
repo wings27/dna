@@ -1,12 +1,11 @@
 from __future__ import print_function
-import csv
 
 import os
-
-import numpy
 import re
 
-from snp import SnpFeature
+import numpy
+
+from snp import *
 
 map_matrix = numpy.genfromtxt('test.map', str)
 ped_matrix = numpy.genfromtxt('test.ped', str)
@@ -18,22 +17,24 @@ GROUP_RANGE = 100000
 SNP_SIZE = 2
 
 
-def group_and_save_snps():
+def group_and_save_feature():
     __remove_output()
+    prefix = 'feature.'
     for i in range(0, int(len(ped_matrix[0]) / SNP_SIZE)):
         snp_i = numpy.transpose(ped_matrix[:, i * SNP_SIZE:(i + 1) * SNP_SIZE])
         group_num = int(map_matrix[i])
         group_id = int(int(group_num) / GROUP_RANGE)
-        __save_snp(group_id, snp_i)
-
-        # fixme for debug only >>>
 
         snp_feature = SnpFeature(snp_i)
-        print(snp_feature.p_A())
-        print(snp_feature.p_AA_Aa_aa())
-        # fixme for debug only <<<
 
-    return __get_output_file_names()
+        __save_array(prefix + str(group_id), snp_feature.data)
+
+    output_map = {}
+    for file_name in os.listdir('.'):
+        if re.search('.+\.out$', file_name):
+            file_id = int(file_name[len(prefix): -len('.out')])
+            output_map[file_id] = file_name
+    return output_map
 
 
 def __remove_output():
@@ -42,28 +43,21 @@ def __remove_output():
             os.remove(f)
 
 
-def __save_snp(snp_id, snp):
-    with open('group.' + str(snp_id) + '.out', 'a') as f:
-        f.write(str(snp))
+def __save_array(file_name, array):
+    with open(file_name + '.out', 'a') as f:
+        f.write(str(array)[1:-1])
         f.write('\n')
 
 
-def __get_output_file_names():
-    output_map = {}
-    for file_name in os.listdir('.'):
-        if re.search('.+\.out$', file_name):
-            file_id = int(file_name[len('group.'): -len('.out')])
-            output_map[file_id] = file_name
-    return output_map
-
-
 def main_process():
-    output_map = group_and_save_snps()
+    output_map = group_and_save_feature()
     output_map_keys = sorted(output_map.keys())
     file1 = output_map[output_map_keys[0]]
     file2 = output_map[output_map_keys[1]]
 
     print(file1, file2)
+    features = FileHelper.load_feature_group(file1)
+    print(features)
 
 
 if __name__ == '__main__':

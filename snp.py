@@ -1,12 +1,13 @@
 from __future__ import print_function
 
 from decimal import Decimal
+import numpy
 
 
-class FileIO:
-    def load_snp_group(self, file_name):
-        with open(file_name, 'r') as f:
-            f.write('\n\n')
+class FileHelper:
+    @staticmethod
+    def load_feature_group(file_name):
+        return numpy.loadtxt(file_name, int, delimiter=',')
 
 
 class SnpFeature:
