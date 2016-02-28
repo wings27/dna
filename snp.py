@@ -55,6 +55,11 @@ class SnpFeature:
 
 
 class CLDCalculation:
+    F_AABB = (1, 1)
+    F_AABb = (1, 0)
+    F_AaBB = (0, 1)
+    F_AaBb = (0, 0)
+
     def __init__(self, snp_group_1, snp_group_2):
         self.snp_group_1 = snp_group_1
         self.snp_group_2 = snp_group_2
@@ -77,10 +82,45 @@ class CLDCalculation:
                 print(cld1)
         return cld1_max
 
+    def cld_2(self):
+        cld2_max = -100000
+        for line1 in self.snp_group_1:
+            for line2 in self.snp_group_2:
+                f1 = SnpFeature(list(line1))
+                f2 = SnpFeature(list(line2))
+                n_c = self.__n_count(f1, f2)
+                p_AA_x_p_BB = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[0]
+                adder_1 = (Decimal(n_c[self.F_AABB]) / self.n - p_AA_x_p_BB) ** 2 / p_AA_x_p_BB
+
+                p_AA_x_p_Bb = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[0]
+                adder_2 = (Decimal(n_c[self.F_AABB]) / self.n - p_AA_x_p_Bb) ** 2 / p_AA_x_p_Bb
+
+                p_AA_x_p_BB = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[0]
+                adder_3 = (Decimal(n_c[self.F_AABB]) / self.n - p_AA_x_p_BB) ** 2 / p_AA_x_p_BB
+
+                p_AA_x_p_BB = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[0]
+                adder_4 = (Decimal(n_c[self.F_AABB]) / self.n - p_AA_x_p_BB) ** 2 / p_AA_x_p_BB
+
+                p_AA_x_p_BB = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[0]
+                adder_5 = (Decimal(n_c[self.F_AABB]) / self.n - p_AA_x_p_BB) ** 2 / p_AA_x_p_BB
+
+                p_AA_x_p_BB = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[0]
+                adder_6 = (Decimal(n_c[self.F_AABB]) / self.n - p_AA_x_p_BB) ** 2 / p_AA_x_p_BB
+
+                cld2 = self.n * adder_1 + adder_2 + adder_3 + adder_4 + adder_5 + adder_6
+
+                if cld2 > cld2_max:
+                    cld2_max = cld2
+                print(cld2)
+        return cld2_max
+
     def __n_AB(self, snp_feature1, snp_feature2):
-        n_count = {(1, 1): 0, (1, 0): 0, (0, 1): 0, (0, 0): 0}
+        n_c = self.__n_count(snp_feature1, snp_feature2)
+        return 2 * n_c[self.F_AABB] + n_c[self.F_AABb] + n_c[self.F_AaBB] + Decimal(0.5) * n_c[self.F_AaBb]
+
+    def __n_count(self, snp_feature1, snp_feature2):
+        n_count = {}
         for i in range(0, self.n):
             key = (snp_feature1[i], snp_feature2[i])
-            if key in n_count:
-                n_count[key] += 1
-        return 2 * n_count[(1, 1)] + n_count[(1, 0)] + n_count[(0, 1)] + Decimal(0.5) * n_count[(0, 0)]
+            n_count[key] = n_count.get(key, 0) + 1
+        return n_count
