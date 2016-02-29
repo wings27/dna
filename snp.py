@@ -37,6 +37,8 @@ class SnpFeature:
             return 1
         elif symbol == small_item * 2:
             return -1
+        elif symbol == '00':
+            return 2
         else:
             return 0
 
