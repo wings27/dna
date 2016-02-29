@@ -5,8 +5,8 @@ import re
 
 from snp import *
 
-map_matrix = numpy.genfromtxt('22.map', str)
-ped_matrix = numpy.genfromtxt('22.ped', str)
+map_matrix = numpy.genfromtxt('test.map', str)
+ped_matrix = numpy.genfromtxt('test.ped', str)
 
 map_matrix = map_matrix[:, -1]
 ped_matrix = ped_matrix[:, 6:]
@@ -18,6 +18,10 @@ SNP_SIZE = 2
 def group_and_save_feature():
     __remove_output()
     prefix = 'feature.'
+    for i in range(0, int(len(ped_matrix[0]))):
+        if '0' in set(ped_matrix[i]):
+
+
     for i in range(0, int(len(ped_matrix[0]) / SNP_SIZE)):
         snp_i = numpy.transpose(ped_matrix[:, i * SNP_SIZE:(i + 1) * SNP_SIZE])
         group_num = int(map_matrix[i])

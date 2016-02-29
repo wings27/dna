@@ -13,6 +13,7 @@ class FileHelper:
 
 class SnpFeature:
     GENE_LENGTH = 2
+    EMPTY = 2
 
     def __init__(self, features):
         self.data = features
@@ -39,17 +40,17 @@ class SnpFeature:
         elif symbol == small_item * 2:
             return -1
         elif symbol == '00':
-            return 2
+            return SnpFeature.EMPTY
         else:
             return 0
 
     def p_A(self):
         large_count = self.__largeCount * self.GENE_LENGTH + self.__mediumCount
 
-        return Decimal(large_count) / (len(self.data) * self.GENE_LENGTH)
+        return Decimal(large_count) / ((len(self.data) - self.data.count(SnpFeature.EMPTY)) * self.GENE_LENGTH)
 
     def p_AA_Aa_aa(self):
-        return tuple(map(lambda x: Decimal(x) / len(self.data),
+        return tuple(map(lambda x: Decimal(x) / (len(self.data) - self.data.count(SnpFeature.EMPTY)),
                          (self.__largeCount, self.__mediumCount, self.__smallCount)))
 
 
