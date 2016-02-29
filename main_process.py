@@ -3,12 +3,10 @@ from __future__ import print_function
 import os
 import re
 
-import numpy
-
 from snp import *
 
-map_matrix = numpy.genfromtxt('test.map', str)
-ped_matrix = numpy.genfromtxt('test.ped', str)
+map_matrix = numpy.genfromtxt('22.map', str)
+ped_matrix = numpy.genfromtxt('22.ped', str)
 
 map_matrix = map_matrix[:, -1]
 ped_matrix = ped_matrix[:, 6:]

@@ -24,13 +24,9 @@ class SnpFeature:
 
     @staticmethod
     def extract_feature(snp):
-        snp00 = snp[0][0]
-        large_item = small_item = snp00
-        for item in snp[0]:
-            if item > large_item:
-                large_item = item
-            if item < small_item:
-                small_item = item
+        chars = set(snp[0]).intersection(set(snp[1])).difference(['0'])
+        small_item = sorted(chars)[0]
+        large_item = sorted(chars)[1]
 
         return [SnpFeature.__extract_feature_from_symbol(snp[0][i] + snp[1][i], large_item, small_item)
                 for i in range(0, len(snp[0]))]
