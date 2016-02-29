@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 from decimal import Decimal
+
 import numpy
 
 
@@ -26,7 +27,7 @@ class SnpFeature:
     def extract_feature(snp):
         chars = set(snp[0]).intersection(set(snp[1])).difference(['0'])
         small_item = sorted(chars)[0]
-        large_item = sorted(chars)[1]
+        large_item = sorted(chars)[-1]
 
         return [SnpFeature.__extract_feature_from_symbol(snp[0][i] + snp[1][i], large_item, small_item)
                 for i in range(0, len(snp[0]))]
