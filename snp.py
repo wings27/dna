@@ -57,8 +57,13 @@ class SnpFeature:
 class CLDCalculation:
     F_AABB = (1, 1)
     F_AABb = (1, 0)
+    F_AAbb = (1, -1)
     F_AaBB = (0, 1)
     F_AaBb = (0, 0)
+    F_Aabb = (0, -1)
+    F_aaBB = (-1, 1)
+    F_aaBb = (-1, 0)
+    F_aabb = (-1, -1)
 
     def __init__(self, snp_group_1, snp_group_2):
         self.snp_group_1 = snp_group_1
@@ -90,24 +95,34 @@ class CLDCalculation:
                 f2 = SnpFeature(list(line2))
                 n_c = self.__n_count(f1, f2)
                 p_AA_x_p_BB = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[0]
-                adder_1 = (Decimal(n_c[self.F_AABB]) / self.n - p_AA_x_p_BB) ** 2 / p_AA_x_p_BB
+                adder_1 = (Decimal(n_c[CLDCalculation.F_AABB]) / self.n - p_AA_x_p_BB) ** 2 / p_AA_x_p_BB
 
-                p_AA_x_p_Bb = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[0]
-                adder_2 = (Decimal(n_c[self.F_AABB]) / self.n - p_AA_x_p_Bb) ** 2 / p_AA_x_p_Bb
+                p_AA_x_p_Bb = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[1]
+                adder_2 = (Decimal(n_c[CLDCalculation.F_AABb]) / self.n - p_AA_x_p_Bb) ** 2 / p_AA_x_p_Bb
 
-                p_AA_x_p_BB = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[0]
-                adder_3 = (Decimal(n_c[self.F_AABB]) / self.n - p_AA_x_p_BB) ** 2 / p_AA_x_p_BB
+                p_AA_x_p_bb = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[2]
+                adder_3 = (Decimal(n_c[CLDCalculation.F_AAbb]) / self.n - p_AA_x_p_bb) ** 2 / p_AA_x_p_bb
 
-                p_AA_x_p_BB = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[0]
-                adder_4 = (Decimal(n_c[self.F_AABB]) / self.n - p_AA_x_p_BB) ** 2 / p_AA_x_p_BB
+                p_Aa_x_p_BB = Decimal(f1.p_AA_Aa_aa()[1]) * f2.p_AA_Aa_aa()[0]
+                adder_4 = (Decimal(n_c[self.F_AaBB]) / self.n - p_Aa_x_p_BB) ** 2 / p_Aa_x_p_BB
 
-                p_AA_x_p_BB = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[0]
-                adder_5 = (Decimal(n_c[self.F_AABB]) / self.n - p_AA_x_p_BB) ** 2 / p_AA_x_p_BB
+                p_Aa_x_p_Bb = Decimal(f1.p_AA_Aa_aa()[1]) * f2.p_AA_Aa_aa()[1]
+                adder_5 = (Decimal(n_c[self.F_AaBb]) / self.n - p_Aa_x_p_Bb) ** 2 / p_Aa_x_p_Bb
 
-                p_AA_x_p_BB = Decimal(f1.p_AA_Aa_aa()[0]) * f2.p_AA_Aa_aa()[0]
-                adder_6 = (Decimal(n_c[self.F_AABB]) / self.n - p_AA_x_p_BB) ** 2 / p_AA_x_p_BB
+                p_Aa_x_p_bb = Decimal(f1.p_AA_Aa_aa()[1]) * f2.p_AA_Aa_aa()[2]
+                adder_6 = (Decimal(n_c[CLDCalculation.F_Aabb]) / self.n - p_Aa_x_p_bb) ** 2 / p_Aa_x_p_bb
 
-                cld2 = self.n * adder_1 + adder_2 + adder_3 + adder_4 + adder_5 + adder_6
+                p_aa_x_p_BB = Decimal(f1.p_AA_Aa_aa()[2]) * f2.p_AA_Aa_aa()[0]
+                adder_7 = (Decimal(n_c[CLDCalculation.F_aaBB]) / self.n - p_aa_x_p_BB) ** 2 / p_aa_x_p_BB
+
+                p_aa_x_p_Bb = Decimal(f1.p_AA_Aa_aa()[2]) * f2.p_AA_Aa_aa()[1]
+                adder_8 = (Decimal(n_c[CLDCalculation.F_aaBb]) / self.n - p_aa_x_p_Bb) ** 2 / p_aa_x_p_Bb
+
+                p_aa_x_p_bb = Decimal(f1.p_AA_Aa_aa()[2]) * f2.p_AA_Aa_aa()[2]
+                adder_9 = (Decimal(n_c[CLDCalculation.F_aabb]) / self.n - p_aa_x_p_bb) ** 2 / p_aa_x_p_bb
+
+                cld2 = self.n * (
+                    adder_1 + adder_2 + adder_3 + adder_4 + adder_5 + adder_6 + adder_7 + adder_8 + adder_9)
 
                 if cld2 > cld2_max:
                     cld2_max = cld2
@@ -116,7 +131,9 @@ class CLDCalculation:
 
     def __n_AB(self, snp_feature1, snp_feature2):
         n_c = self.__n_count(snp_feature1, snp_feature2)
-        return 2 * n_c[self.F_AABB] + n_c[self.F_AABb] + n_c[self.F_AaBB] + Decimal(0.5) * n_c[self.F_AaBb]
+        print(n_c.get(self.F_AABB, 0), n_c.get(self.F_AABb, 0), n_c.get(self.F_AaBB, 0), n_c.get(self.F_AaBb, 0))
+        return 2 * n_c.get(self.F_AABB, 0) + n_c.get(self.F_AABb, 0) + n_c.get(self.F_AaBB, 0) + Decimal(0.5) * n_c.get(
+            self.F_AaBb, 0)
 
     def __n_count(self, snp_feature1, snp_feature2):
         n_count = {}
