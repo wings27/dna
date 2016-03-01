@@ -84,13 +84,6 @@ def main_process():
         result_matrix[x][y] = cld_1
         result_matrix[y][x] = cld_1
 
-    for diagonal in range(smaller_size):
-        file = output_map[output_map_keys[diagonal]]
-        features = FileHelper.load_feature_group(file)
-        cld_cal = CLDCalculation(features, features)
-        cld_1 = cld_cal.cld_1()
-        result_matrix[diagonal][diagonal] = cld_1
-
     print(result_matrix)
 
 
