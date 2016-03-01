@@ -8,7 +8,10 @@ import numpy
 class FileHelper:
     @staticmethod
     def load_feature_group(file_name):
-        return numpy.loadtxt(file_name, int, delimiter=',')
+        loaded_result = numpy.loadtxt(file_name, int, delimiter=',')
+        if len(loaded_result.shape) == 1:
+            loaded_result = loaded_result.reshape((1, -1))
+        return loaded_result
 
 
 class SnpFeature:
@@ -84,7 +87,6 @@ class CLDCalculation:
                 cld1 = self.n * sig_AB ** 2 / (down_left * down_right)
                 if cld1 > cld1_max:
                     cld1_max = cld1
-                print(cld1)
         return cld1_max
 
     def cld_2(self):
@@ -126,12 +128,10 @@ class CLDCalculation:
 
                 if cld2 > cld2_max:
                     cld2_max = cld2
-                print(cld2)
         return cld2_max
 
     def __n_AB(self, snp_feature1, snp_feature2):
         n_c = self.__n_count(snp_feature1, snp_feature2)
-        print(n_c.get(self.F_AABB, 0), n_c.get(self.F_AABb, 0), n_c.get(self.F_AaBB, 0), n_c.get(self.F_AaBb, 0))
         return 2 * n_c.get(self.F_AABB, 0) + n_c.get(self.F_AABb, 0) + n_c.get(self.F_AaBB, 0) + Decimal(0.5) * n_c.get(
             self.F_AaBb, 0)
 

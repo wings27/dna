@@ -3,6 +3,8 @@ from __future__ import print_function
 import os
 import re
 
+import itertools
+
 from snp import *
 
 
@@ -63,14 +65,26 @@ def __save_array(file_name, array):
 def main_process():
     output_map = group_and_save_feature()
     output_map_keys = sorted(output_map.keys())
-    file1 = output_map[output_map_keys[0]]
-    file2 = output_map[output_map_keys[1]]
 
-    print(file1, file2)
-    features1 = FileHelper.load_feature_group(file1)
-    features2 = FileHelper.load_feature_group(file2)
-    cld_cal = CLDCalculation(features1, features2)
-    print(cld_cal.cld_1())
+    smaller_size = min(len(output_map_keys), 20)
+    result_matrix = numpy.zeros((smaller_size, smaller_size))
+
+    for cbn in itertools.combinations(range(smaller_size), 2):
+        x = cbn[0]
+        y = cbn[1]
+
+        file1 = output_map[output_map_keys[x]]
+        file2 = output_map[output_map_keys[y]]
+
+        features1 = FileHelper.load_feature_group(file1)
+        features2 = FileHelper.load_feature_group(file2)
+        cld_cal = CLDCalculation(features1, features2)
+        cld_1 = cld_cal.cld_1()
+
+        result_matrix[x][y] = cld_1
+        result_matrix[y][x] = cld_1
+
+    print(result_matrix)
 
 
 if __name__ == '__main__':
