@@ -5,11 +5,14 @@ import re
 
 from snp import *
 
-map_matrix = numpy.genfromtxt('test.map', str)
-ped_matrix = numpy.genfromtxt('test.ped', str)
 
-map_matrix = map_matrix[:, -1]
-ped_matrix = ped_matrix[:, 6:]
+class MatrixContainer:
+    map_matrix = numpy.genfromtxt('test.map', str)
+    ped_matrix = numpy.genfromtxt('test.ped', str)
+
+    map_matrix = map_matrix[:, -1]
+    ped_matrix = ped_matrix[:, 6:]
+
 
 GROUP_RANGE = 100000
 SNP_SIZE = 2
@@ -18,13 +21,19 @@ SNP_SIZE = 2
 def group_and_save_feature():
     __remove_output()
     prefix = 'feature.'
-    for i in range(0, int(len(ped_matrix[0]))):
-        if '0' in set(ped_matrix[i]):
 
+    p_matrix = MatrixContainer.ped_matrix
+    m_matrix = MatrixContainer.map_matrix
+    for i in range(0, int(len(p_matrix))):
+        if i >= len(p_matrix):
+            break
+        l = list(p_matrix[i])
+        if '0' in l:
+            p_matrix = numpy.delete(p_matrix, i, 0)
 
-    for i in range(0, int(len(ped_matrix[0]) / SNP_SIZE)):
-        snp_i = numpy.transpose(ped_matrix[:, i * SNP_SIZE:(i + 1) * SNP_SIZE])
-        group_num = int(map_matrix[i])
+    for i in range(0, int(len(p_matrix[0]) / SNP_SIZE)):
+        snp_i = numpy.transpose(p_matrix[:, i * SNP_SIZE:(i + 1) * SNP_SIZE])
+        group_num = int(m_matrix[i])
         group_id = int(int(group_num) / GROUP_RANGE)
 
         snp_feature = SnpFeature.extract_feature(snp_i)
