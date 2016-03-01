@@ -7,8 +7,8 @@ from snp import *
 
 
 class MatrixContainer:
-    map_matrix = numpy.genfromtxt('test.map', str)
-    ped_matrix = numpy.genfromtxt('test.ped', str)
+    map_matrix = numpy.genfromtxt('newtest.map', str)
+    ped_matrix = numpy.genfromtxt('newtest.ped', str)
 
     map_matrix = map_matrix[:, -1]
     ped_matrix = ped_matrix[:, 6:]

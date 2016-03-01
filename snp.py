@@ -26,7 +26,7 @@ class SnpFeature:
 
     @staticmethod
     def extract_feature(snp):
-        chars = set(snp[0]).intersection(set(snp[1])).difference(['0'])
+        chars = set(snp[0]).union(set(snp[1])).difference(['0'])
         small_item = sorted(chars)[0]
         large_item = sorted(chars)[-1]
 
