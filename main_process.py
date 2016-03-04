@@ -21,7 +21,11 @@ SNP_SIZE = 2
 
 
 def group_and_save_feature():
-    __remove_output()
+    DIRECTORY = 'newtest'
+    __remove_output(DIRECTORY)
+
+    os.makedirs(DIRECTORY, exist_ok=True)
+
     prefix = 'feature.'
 
     p_matrix = MatrixContainer.ped_matrix
@@ -40,33 +44,33 @@ def group_and_save_feature():
 
         snp_feature = SnpFeature.extract_feature(snp_i)
 
-        __save_array(prefix + str(group_id), snp_feature)
+        __save_array(DIRECTORY + '/' + prefix + str(group_id), snp_feature, '%d')
 
     output_map = {}
-    for file_name in os.listdir('.'):
+    for file_name in os.listdir(DIRECTORY):
         if re.search('.+\.out$', file_name):
             file_id = int(file_name[len(prefix): -len('.out')])
-            output_map[file_id] = file_name
+            output_map[file_id] = DIRECTORY + '/' + file_name
     return output_map
 
 
-def __remove_output():
-    for f in os.listdir('.'):
+def __remove_output(directory):
+    if not os.path.exists(directory):
+        return
+    for f in os.listdir(directory):
         if re.search('.+\.out$', f):
             os.remove(f)
 
 
-def __save_array(file_name, array):
-    with open(file_name + '.out', 'a') as f:
-        f.write(str(array)[1:-1])
-        f.write('\n')
+def __save_array(file_name, array, fmt):
+    numpy.savetxt(file_name + '.out', array, fmt, ',')
 
 
 def main_process():
     output_map = group_and_save_feature()
     output_map_keys = sorted(output_map.keys())
 
-    smaller_size = min(len(output_map_keys), 20)
+    smaller_size = min(len(output_map_keys), 20000)
     result_matrix = numpy.zeros((smaller_size, smaller_size))
 
     for cbn in itertools.combinations(range(smaller_size), 2):
@@ -79,12 +83,22 @@ def main_process():
         features1 = FileHelper.load_feature_group(file1)
         features2 = FileHelper.load_feature_group(file2)
         cld_cal = CLDCalculation(features1, features2)
-        cld_1 = cld_cal.cld_1()
+        # cld_1 = cld_cal.cld_1()
 
-        result_matrix[x][y] = cld_1
-        result_matrix[y][x] = cld_1
+        #  result_matrix[x][y] = cld_1
+        #  result_matrix[y][x] = cld_1
 
+        # cld_2 = cld_cal.cld_2()
+
+        # result_matrix[x][y] = cld_2
+        # result_matrix[y][x] = cld_2
+
+        temp = cld_cal.temp_AB()
+
+        result_matrix[x][y] = temp
+        result_matrix[y][x] = temp
     print(result_matrix)
+    __save_array('n_AB', result_matrix, '%.8f')
 
 
 if __name__ == '__main__':

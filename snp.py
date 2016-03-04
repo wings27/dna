@@ -73,6 +73,19 @@ class CLDCalculation:
         self.snp_group_2 = snp_group_2
         self.n = len(snp_group_1[0])
 
+    def temp_AB(self):
+        temp_max = -100000
+        for line1 in self.snp_group_1:
+            for line2 in self.snp_group_2:
+                f1 = SnpFeature(list(line1))
+                f2 = SnpFeature(list(line2))
+                n_AB_value = self.__n_AB(f1, f2)
+                temp = n_AB_value / self.n - 2 * f1.p_A() * f2.p_A()
+
+                if temp > temp_max:
+                    temp_max = temp
+        return temp_max
+
     def cld_1(self):
         cld1_max = -100000
         for line1 in self.snp_group_1:
