@@ -24,7 +24,8 @@ def group_and_save_feature():
     DIRECTORY = 'newtest'
     __remove_output(DIRECTORY)
 
-    os.makedirs(DIRECTORY, exist_ok=True)
+    if not os.path.exists(DIRECTORY):
+        os.makedirs(DIRECTORY)
 
     prefix = 'feature.'
 
