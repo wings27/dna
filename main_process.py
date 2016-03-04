@@ -9,28 +9,40 @@ from snp import *
 
 
 class MatrixContainer:
-    map_matrix = numpy.genfromtxt('newtest.map', str)
-    ped_matrix = numpy.genfromtxt('newtest.ped', str)
+    @classmethod
+    def ped_matrix(cls, directory):
+        ped_matrix = numpy.genfromtxt(directory + '.ped', str)
+        ped_matrix = ped_matrix[:, 6:]
+        return ped_matrix
 
-    map_matrix = map_matrix[:, -1]
-    ped_matrix = ped_matrix[:, 6:]
+    @classmethod
+    def map_matrix(cls, directory):
+        map_matrix = numpy.genfromtxt(directory + '.map', str)
+        map_matrix = map_matrix[:, -1]
+        return map_matrix
 
 
-GROUP_RANGE = 100000
-SNP_SIZE = 2
+CONFIG = {
+    'DIRECTORY': 'newtest',
+    'GROUP_RANGE': 100000,
+    'SNP_SIZE': 2
+}
 
 
 def group_and_save_feature():
-    DIRECTORY = 'newtest'
-    __remove_output(DIRECTORY)
+    directory = CONFIG['DIRECTORY']
 
-    if not os.path.exists(DIRECTORY):
-        os.makedirs(DIRECTORY)
+    __remove_output(directory)
+    __remove_output('.')
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
     prefix = 'feature.'
 
-    p_matrix = MatrixContainer.ped_matrix
-    m_matrix = MatrixContainer.map_matrix
+    m_matrix = MatrixContainer.map_matrix(directory)
+    p_matrix = MatrixContainer.ped_matrix(directory)
+
     for i in range(0, int(len(p_matrix))):
         if i >= len(p_matrix):
             break
@@ -38,20 +50,22 @@ def group_and_save_feature():
         if '0' in l:
             p_matrix = numpy.delete(p_matrix, i, 0)
 
-    for i in range(0, int(len(p_matrix[0]) / SNP_SIZE)):
-        snp_i = numpy.transpose(p_matrix[:, i * SNP_SIZE:(i + 1) * SNP_SIZE])
+    snp_size, group_range = CONFIG['SNP_SIZE'], CONFIG['GROUP_RANGE']
+    for i in range(0, int(len(p_matrix[0]) / snp_size)):
+        snp_i = numpy.transpose(p_matrix[:, i * snp_size:(i + 1) * snp_size])
         group_num = int(m_matrix[i])
-        group_id = int(int(group_num) / GROUP_RANGE)
+        group_id = int(int(group_num) / group_range)
 
         snp_feature = SnpFeature.extract_feature(snp_i)
 
-        __save_array(DIRECTORY + '/' + prefix + str(group_id), snp_feature, '%d')
+        feature_matrix = numpy.matrix(snp_feature)
+        __save_array(directory + '/' + prefix + str(group_id), feature_matrix, '%d')
 
     output_map = {}
-    for file_name in os.listdir(DIRECTORY):
+    for file_name in os.listdir(directory):
         if re.search('.+\.out$', file_name):
             file_id = int(file_name[len(prefix): -len('.out')])
-            output_map[file_id] = DIRECTORY + '/' + file_name
+            output_map[file_id] = directory + '/' + file_name
     return output_map
 
 
@@ -60,11 +74,12 @@ def __remove_output(directory):
         return
     for f in os.listdir(directory):
         if re.search('.+\.out$', f):
-            os.remove(f)
+            os.remove(directory + '/' + f)
 
 
 def __save_array(file_name, array, fmt):
-    numpy.savetxt(file_name + '.out', array, fmt, ',')
+    with open(file_name + '.out', 'ab') as f:
+        numpy.savetxt(f, array, fmt, ',')
 
 
 def main_process():
