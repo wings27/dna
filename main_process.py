@@ -85,7 +85,8 @@ def __save_array(file_name, array, fmt):
 
 def __render_array(result_matrix, interpolation):
     ax = pyplot.figure().gca()
-    ax.imshow(result_matrix, interpolation=interpolation)
+    img = ax.imshow(result_matrix, interpolation=interpolation)
+    pyplot.colorbar(img)
     pyplot.show()
 
 
