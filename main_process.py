@@ -124,7 +124,6 @@ def main_process():
     print(result_matrix)
 
     __save_array('n_AB', result_matrix, '%.8f')
-    __render_array(result_matrix, 'none')
 
 
 if __name__ == '__main__':
