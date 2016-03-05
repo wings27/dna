@@ -1,9 +1,10 @@
 from __future__ import print_function
 
+import itertools
 import os
 import re
 
-import itertools
+from matplotlib import pyplot
 
 from snp import *
 
@@ -82,6 +83,12 @@ def __save_array(file_name, array, fmt):
         numpy.savetxt(f, array, fmt, ',')
 
 
+def __render_array(result_matrix, interpolation):
+    ax = pyplot.figure().gca()
+    ax.imshow(result_matrix, interpolation=interpolation)
+    pyplot.show()
+
+
 def main_process():
     output_map = group_and_save_feature()
     output_map_keys = sorted(output_map.keys())
@@ -114,7 +121,9 @@ def main_process():
         result_matrix[x][y] = temp
         result_matrix[y][x] = temp
     print(result_matrix)
+
     __save_array('n_AB', result_matrix, '%.8f')
+    __render_array(result_matrix, 'none')
 
 
 if __name__ == '__main__':
