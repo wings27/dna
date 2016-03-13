@@ -44,7 +44,7 @@ def group_and_save_feature():
     m_matrix = MatrixContainer.map_matrix(directory)
     p_matrix = MatrixContainer.ped_matrix(directory)
 
-    for i in range(0, int(len(p_matrix))):
+    for i in range(int(len(p_matrix))):
         if i >= len(p_matrix):
             break
         l = list(p_matrix[i])
@@ -52,7 +52,7 @@ def group_and_save_feature():
             p_matrix = numpy.delete(p_matrix, i, 0)
 
     snp_size, group_range = CONFIG['SNP_SIZE'], CONFIG['GROUP_RANGE']
-    for i in range(0, int(len(p_matrix[0]) / snp_size)):
+    for i in range(int(len(p_matrix[0]) / snp_size)):
         snp_i = numpy.transpose(p_matrix[:, i * snp_size:(i + 1) * snp_size])
         group_num = int(m_matrix[i])
         group_id = int(int(group_num) / group_range)

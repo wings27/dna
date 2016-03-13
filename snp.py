@@ -34,7 +34,7 @@ class SnpFeature:
         large_item = sorted(chars)[-1]
 
         return [SnpFeature.__extract_feature_from_symbol(snp[0][i] + snp[1][i], large_item, small_item)
-                for i in range(0, len(snp[0]))]
+                for i in range(len(snp[0]))]
 
     @staticmethod
     def __extract_feature_from_symbol(symbol, large_item, small_item):
@@ -150,7 +150,7 @@ class CLDCalculation:
 
     def __n_count(self, snp_feature1, snp_feature2):
         n_count = {}
-        for i in range(0, self.n):
+        for i in range(self.n):
             key = (snp_feature1[i], snp_feature2[i])
             n_count[key] = n_count.get(key, 0) + 1
         return n_count
