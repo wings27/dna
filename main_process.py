@@ -95,12 +95,8 @@ def main_process():
     output_map_keys = sorted(output_map.keys())
 
     smaller_size = min(len(output_map_keys), 20000)
-    # result_matrix = numpy.zeros((smaller_size, smaller_size))
+    result_matrix = numpy.zeros((smaller_size, smaller_size))
 
-    columns = 3
-    result_matrix = numpy.zeros((smaller_size * (smaller_size - 1) / 2, columns))
-
-    counter = 0
     for cbn in itertools.combinations(range(smaller_size), 2):
         x = cbn[0]
         y = cbn[1]
@@ -123,10 +119,8 @@ def main_process():
 
         temp = cld_cal.temp_AB()
 
-        result_matrix[counter][0] = x
-        result_matrix[counter][1] = y
-        result_matrix[counter][2] = temp
-        counter += 1
+        result_matrix[x][y] = temp
+        result_matrix[y][x] = temp
     print(result_matrix)
 
     __save_array('n_AB', result_matrix, '%.8f')
