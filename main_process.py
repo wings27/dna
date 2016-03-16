@@ -24,7 +24,7 @@ class MatrixContainer:
 
 
 CONFIG = {
-    'DIRECTORY': 'newtest',
+    'DIRECTORY': 'newtest(1)',
     'GROUP_RANGE': 100000,
     'SNP_SIZE': 2
 }
@@ -60,7 +60,7 @@ def group_and_save_feature():
         snp_feature = SnpFeature.extract_feature(snp_i)
 
         feature_matrix = numpy.matrix(snp_feature)
-        __save_array(directory + '/' + prefix + str(group_id), feature_matrix, '%d')
+        FileHelper.save_array(directory + '/' + prefix + str(group_id), feature_matrix, '%d')
 
     output_map = {}
     for file_name in os.listdir(directory):
@@ -76,11 +76,6 @@ def __remove_output(directory):
     for f in os.listdir(directory):
         if re.search('.+\.out$', f):
             os.remove(directory + '/' + f)
-
-
-def __save_array(file_name, array, fmt):
-    with open(file_name + '.out', 'ab') as f:
-        numpy.savetxt(f, array, fmt, ',')
 
 
 def __render_array(result_matrix, interpolation):
@@ -123,7 +118,15 @@ def main_process():
         result_matrix[y][x] = temp
     print(result_matrix)
 
-    __save_array('n_AB', result_matrix, '%.8f')
+    for i in range(smaller_size):
+        file = output_map[output_map_keys[i]]
+        features = FileHelper.load_feature_group(file)
+        cld_cal = CLDCalculation(features, features)
+
+        temp = cld_cal.temp_AB()
+        result_matrix[i][i] = temp
+
+    FileHelper.save_array('n_AB', result_matrix, '%.8f')
 
 
 if __name__ == '__main__':

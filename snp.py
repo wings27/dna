@@ -13,6 +13,11 @@ class FileHelper:
             loaded_result = loaded_result.reshape((1, -1))
         return loaded_result
 
+    @staticmethod
+    def save_array(file_name, array, fmt):
+        with open(file_name + '.out', 'ab') as f:
+            numpy.savetxt(f, array, fmt, ',')
+
 
 class SnpFeature:
     GENE_LENGTH = 2
