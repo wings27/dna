@@ -116,7 +116,6 @@ def main_process():
 
         result_matrix[x][y] = temp
         result_matrix[y][x] = temp
-    print(result_matrix)
 
     for i in range(smaller_size):
         file = output_map[output_map_keys[i]]
@@ -126,6 +125,7 @@ def main_process():
         temp = cld_cal.temp_AB()
         result_matrix[i][i] = temp
 
+    print(result_matrix)
     FileHelper.save_array('n_AB', result_matrix, '%.8f')
 
 
