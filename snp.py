@@ -91,6 +91,45 @@ class CLDCalculation:
                     temp_max = temp
         return temp_max
 
+    def temp_Ab(self):
+        temp_max = -100000
+        for line1 in self.snp_group_1:
+            for line2 in self.snp_group_2:
+                f1 = SnpFeature(list(line1))
+                f2 = SnpFeature(list(line2))
+                n_Ab_value = self.__n_Ab(f1, f2)
+                temp = n_Ab_value / self.n - 2 * f1.p_A() * (1 - f2.p_A())
+
+                if temp > temp_max:
+                    temp_max = temp
+        return temp_max
+
+    def temp_aB(self):
+        temp_max = -100000
+        for line1 in self.snp_group_1:
+            for line2 in self.snp_group_2:
+                f1 = SnpFeature(list(line1))
+                f2 = SnpFeature(list(line2))
+                n_aB_value = self.__n_aB(f1, f2)
+                temp = n_aB_value / self.n - 2 * (1 - f1.p_A()) * f2.p_A()
+
+                if temp > temp_max:
+                    temp_max = temp
+        return temp_max
+
+    def temp_ab(self):
+        temp_max = -100000
+        for line1 in self.snp_group_1:
+            for line2 in self.snp_group_2:
+                f1 = SnpFeature(list(line1))
+                f2 = SnpFeature(list(line2))
+                n_ab_value = self.__n_ab(f1, f2)
+                temp = n_ab_value / self.n - 2 * (1 - f1.p_A()) * (1 - f2.p_A())
+
+                if temp > temp_max:
+                    temp_max = temp
+        return temp_max
+
     def cld_1(self):
         cld1_max = -100000
         for line1 in self.snp_group_1:
@@ -151,6 +190,21 @@ class CLDCalculation:
     def __n_AB(self, snp_feature1, snp_feature2):
         n_c = self.__n_count(snp_feature1, snp_feature2)
         return 2 * n_c.get(self.F_AABB, 0) + n_c.get(self.F_AABb, 0) + n_c.get(self.F_AaBB, 0) + Decimal(0.5) * n_c.get(
+            self.F_AaBb, 0)
+
+    def __n_Ab(self, snp_feature1, snp_feature2):
+        n_c = self.__n_count(snp_feature1, snp_feature2)
+        return 2 * n_c.get(self.F_AAbb, 0) + n_c.get(self.F_AABb, 0) + n_c.get(self.F_Aabb, 0) + Decimal(0.5) * n_c.get(
+            self.F_AaBb, 0)
+
+    def __n_aB(self, snp_feature1, snp_feature2):
+        n_c = self.__n_count(snp_feature1, snp_feature2)
+        return 2 * n_c.get(self.F_aaBB, 0) + n_c.get(self.F_aaBb, 0) + n_c.get(self.F_AaBB, 0) + Decimal(0.5) * n_c.get(
+            self.F_AaBb, 0)
+
+    def __n_ab(self, snp_feature1, snp_feature2):
+        n_c = self.__n_count(snp_feature1, snp_feature2)
+        return 2 * n_c.get(self.F_aabb, 0) + n_c.get(self.F_aaBb, 0) + n_c.get(self.F_Aabb, 0) + Decimal(0.5) * n_c.get(
             self.F_AaBb, 0)
 
     def __n_count(self, snp_feature1, snp_feature2):

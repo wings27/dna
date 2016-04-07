@@ -24,7 +24,7 @@ class MatrixContainer:
 
 
 CONFIG = {
-    'DIRECTORY': 'newtest(1)',
+    'DIRECTORY': 'test',
     'GROUP_RANGE': 100000,
     'SNP_SIZE': 2
 }
@@ -90,7 +90,7 @@ def main_process():
     output_map_keys = sorted(output_map.keys())
 
     smaller_size = min(len(output_map_keys), 20000)
-    result_matrix = numpy.zeros((smaller_size, smaller_size))
+    result_matrix = numpy.zeros((smaller_size * 2, smaller_size * 2))
 
     for cbn in itertools.combinations(range(smaller_size), 2):
         x = cbn[0]
@@ -112,21 +112,37 @@ def main_process():
         # result_matrix[x][y] = cld_2
         # result_matrix[y][x] = cld_2
 
-        temp = cld_cal.temp_AB()
+        tempAB = cld_cal.temp_AB()
+        tempAb = cld_cal.temp_Ab()
+        tempaB = cld_cal.temp_aB()
+        tempab = cld_cal.temp_ab()
 
-        result_matrix[x][y] = temp
-        result_matrix[y][x] = temp
+        result_matrix[2 * x][2 * y] = tempAB
+        result_matrix[2 * x][2 * y + 1] = tempAb
+        result_matrix[2 * x + 1][2 * y] = tempaB
+        result_matrix[2 * x + 1][2 * y + 1] = tempab
+        result_matrix[2 * y][2 * x] = tempAB
+        result_matrix[2 * y][2 * x + 1] = tempAb
+        result_matrix[2 * y + 1][2 * x] = tempaB
+        result_matrix[2 * y + 1][2 * x + 1] = tempab
 
     for i in range(smaller_size):
         file = output_map[output_map_keys[i]]
         features = FileHelper.load_feature_group(file)
         cld_cal = CLDCalculation(features, features)
 
-        temp = cld_cal.temp_AB()
-        result_matrix[i][i] = temp
+        tempAB = cld_cal.temp_AB()
+        tempAb = cld_cal.temp_Ab()
+        tempaB = cld_cal.temp_aB()
+        tempab = cld_cal.temp_ab()
 
-    print(result_matrix)
+        result_matrix[2 * i][2 * i] = tempAB
+        result_matrix[2 * i][2 * i + 1] = tempAb
+        result_matrix[2 * i + 1][2 * i] = tempaB
+        result_matrix[2 * i + 1][2 * i + 1] = tempab
+
     FileHelper.save_array('n_AB', result_matrix, '%.8f')
+    print(result_matrix)
 
 
 if __name__ == '__main__':
